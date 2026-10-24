@@ -5,10 +5,10 @@ export type Status = z.infer<typeof statusSchema>;
 
 export const sopSchema = z.object({
   synthetic: z.literal(true),
-  pathways: z.record(z.object({
+  pathways: z.record(z.string(), z.object({
     allowedTransitions: z.array(z.tuple([z.string(), z.string()])),
-    prerequisites: z.record(z.array(z.string())),
-    defaultMaxMinutes: z.record(z.number().nonnegative()),
+    prerequisites: z.record(z.string(), z.array(z.string())),
+    defaultMaxMinutes: z.record(z.string(), z.number().nonnegative()),
   })),
 });
 export type Sop = z.infer<typeof sopSchema>;
@@ -20,12 +20,12 @@ export const modelSchema = z.object({
   nodes: z.array(z.object({
     id: z.string(), label: z.string(), visits: z.number().nonnegative(),
     medianMin: z.number().nonnegative(), p90Min: z.number().nonnegative(), needs: z.string().optional(),
-    visitsByPathway: z.record(z.number().nonnegative()).default({}),
+    visitsByPathway: z.record(z.string(), z.number().nonnegative()).default({}),
   })),
   edges: z.array(z.object({
     from: z.string(), to: z.string(), prob: z.number().min(0).max(1),
     medianMin: z.number().nonnegative(), p90Min: z.number().nonnegative(),
-    count: z.number().nonnegative(), countByPathway: z.record(z.number().nonnegative()).default({}),
+    count: z.number().nonnegative(), countByPathway: z.record(z.string(), z.number().nonnegative()).default({}),
   })),
 });
 export type LearnedModel = z.infer<typeof modelSchema>;

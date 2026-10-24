@@ -11,12 +11,12 @@ const modes: Mode[] = ["Typical", "Delayed", "Unexpected", "Resource blocked"];
 const fallbackSop = { pathways: {} } as Sop;
 
 function scenarios(model: LearnedModel, pathway: string): Record<Mode, FlowEvent[]> {
-  const edges = model.edges.filter((edge) => (edge.countByPathway[pathway] ?? 0) > 0);
+  const edges = model.edges.filter((edge) => ((edge.countByPathway as Record<string, number>)[pathway] ?? 0) > 0);
   const terminals = new Set(["DISCHARGE", "ADMIT", "SURGERY"]);
   const route = (node: string, seen: string[] = []): string[] => {
     if (terminals.has(node)) return [node];
     const choices = edges.filter((edge) => edge.from === node && !seen.includes(edge.to))
-      .sort((a, b) => (b.countByPathway[pathway] ?? 0) - (a.countByPathway[pathway] ?? 0));
+      .sort((a, b) => ((b.countByPathway as Record<string, number>)[pathway] ?? 0) - ((a.countByPathway as Record<string, number>)[pathway] ?? 0));
     for (const choice of choices) {
       const rest = route(choice.to, [...seen, node]);
       if (rest.length) return [node, ...rest];
@@ -68,7 +68,7 @@ export default function FlowNetwork() {
   const current = visibleEvents.at(-1);
   const pathwayModel = useMemo(() => {
     if (!currentModel) return undefined;
-    const pathwayEdges = currentModel.edges.filter((edge) => (edge.countByPathway[pathway] ?? 0) > 0);
+    const pathwayEdges = currentModel.edges.filter((edge) => ((edge.countByPathway as Record<string, number>)[pathway] ?? 0) > 0);
     const nodeIds = new Set(pathwayEdges.flatMap((edge) => [edge.from, edge.to]));
     return { ...currentModel, nodes: currentModel.nodes.filter((node) => nodeIds.has(node.id)), edges: pathwayEdges };
   }, [currentModel, pathway]);
@@ -82,7 +82,7 @@ export default function FlowNetwork() {
   const flagStatus = currentFlag?.status as string | undefined;
   const selected = pathwayModel?.nodes.find((node) => node.id === selectedNode) ?? pathwayModel?.nodes[0];
   const selectedEdges = currentModel?.edges.filter((edge) => edge.from === selected?.id) ?? [];
-  const selectedShare = selected && currentModel ? (selected.visitsByPathway[pathway] ?? 0) / currentModel.sampleSize : 0;
+  const selectedShare = selected && currentModel ? ((selected.visitsByPathway as Record<string, number>)[pathway] ?? 0) / currentModel.sampleSize : 0;
   const response = useMemo(() => {
     if (!currentModel || !selected) return null;
     const patient = { id: "flow-demo", pathway, currentStep: selected.id, previousStep: visibleEvents.at(-2)?.node, lastEventT: visibleEvents.at(-2)?.minute ?? current?.minute ?? 0, orderedSteps: visibleEvents.map((event) => event.node) };
@@ -120,7 +120,7 @@ export default function FlowNetwork() {
       </section>
       <div className="flow-network-side">
         <section className="card"><h2>Predicted pathways</h2>{predictions.map((prediction, index) => <div className="flow-path-row" key={prediction.nodes.join("-")}><b>{index === 0 ? "Most likely" : "Alternative"}</b><span>{prediction.nodes.map((id) => nodeMap.get(id)?.label ?? id).join(" then ")}. {Math.round(prediction.probability * 100)}%; about {prediction.extraMinutes} minutes.</span></div>)}{currentFlag && <p className={`flow-status-pill ${currentFlag.status.toLowerCase()}`}><b>{currentFlag.status === "LATE" ? "!" : currentFlag.status === "UNEXPECTED" ? "!" : "✓"}</b> {currentFlag.status === "ON_TRACK" ? "On track" : currentFlag.status === "LATE" ? "Late" : "Unexpected"}: {currentFlag.reason}</p>}</section>
-        <section className="card"><div className="inspector-tabs" role="tablist">{[["response", "Request and response"], ["analytics", "Analytics"]].map(([id, label]) => <button role="tab" aria-selected={inspectorTab === id} className={inspectorTab === id ? "active" : ""} key={id} onClick={() => setInspectorTab(id as typeof inspectorTab)}>{label}</button>)}</div><h2>{selected?.label}</h2>{inspectorTab === "response" ? <><pre className="flow-json">{JSON.stringify(response, null, 2)}</pre><p className="muted">Measured evaluation: {evaluationMs.toFixed(2)} ms.</p></> : <div className="flow-analytics"><p>Historical visits: <b>{selected?.visitsByPathway[pathway] ?? 0}</b>.</p><p>Share of all visits: <b>{(selectedShare * 100).toFixed(1)}%</b>.</p><p>Typical time to next step: <b>{selected?.medianMin} minutes</b>; p90 <b>{selected?.p90Min} minutes</b>.</p><p>Rare exits: calculated from learned edges below 3%.</p><p>Confidence: <b>{Math.round((selectedEdges.sort((a, b) => b.prob - a.prob)[0]?.prob ?? 0) * 100)}%</b>.</p></div>}</section>
+        <section className="card"><div className="inspector-tabs" role="tablist">{[["response", "Request and response"], ["analytics", "Analytics"]].map(([id, label]) => <button role="tab" aria-selected={inspectorTab === id} className={inspectorTab === id ? "active" : ""} key={id} onClick={() => setInspectorTab(id as typeof inspectorTab)}>{label}</button>)}</div><h2>{selected?.label}</h2>{inspectorTab === "response" ? <><pre className="flow-json">{JSON.stringify(response, null, 2)}</pre><p className="muted">Measured evaluation: {evaluationMs.toFixed(2)} ms.</p></> : <div className="flow-analytics"><p>Historical visits: <b>{((selected?.visitsByPathway as Record<string, number>)?.[pathway]) ?? 0}</b>.</p><p>Share of all visits: <b>{(selectedShare * 100).toFixed(1)}%</b>.</p><p>Typical time to next step: <b>{selected?.medianMin} minutes</b>; p90 <b>{selected?.p90Min} minutes</b>.</p><p>Rare exits: calculated from learned edges below 3%.</p><p>Confidence: <b>{Math.round((selectedEdges.sort((a, b) => b.prob - a.prob)[0]?.prob ?? 0) * 100)}%</b>.</p></div>}</section>
         <section className="card"><h2>Patient timeline</h2>{visibleEvents.slice().reverse().map((event, index) => { const originalIndex = visibleEvents.length - index - 1; return <button className="flow-timeline-row" key={`${event.node}-${event.minute}`} onClick={() => { setSelectedNode(event.node); setEventIndex(originalIndex); }}><b>{event.minute} min</b><span>{nodeMap.get(event.node)?.label}</span><strong>{pathStatus(currentModel, visibleEvents, originalIndex)}</strong></button>; })}</section>
       </div>
     </div>

@@ -51,7 +51,7 @@ export function predictPaths(model: LearnedModel, currentNode: string, pathwayId
   function visit(node: string, nodes: string[], probability: number, minutes: number) {
     if (nodes.length > 1) result.push({ nodes, probability, extraMinutes: minutes });
     if (nodes.length >= 6) return;
-    model.edges.filter((edge) => edge.from === node && (edge.countByPathway[pathwayId] ?? 0) > 0).forEach((edge) => {
+    model.edges.filter((edge) => edge.from === node && ((edge.countByPathway as Record<string, number>)[pathwayId] ?? 0) > 0).forEach((edge) => {
       if (nodes.includes(edge.to)) return;
       const nextProbability = probability * edge.prob;
       if (nextProbability >= 0.02) visit(edge.to, [...nodes, edge.to], nextProbability, minutes + edge.medianMin);
