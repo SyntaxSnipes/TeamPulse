@@ -5,15 +5,15 @@ import { z } from "zod";
 export const siteConfigSchema = z.object({
   siteName: z.string().min(1),
   mappings: z.object({
-    steps: z.record(z.string().min(1)),
-    locations: z.record(z.string().min(1)),
-    departments: z.record(z.string().min(1)),
-    beds: z.record(z.string().min(1)),
-    equipment: z.record(z.string().min(1)),
+    steps: z.record(z.string(), z.string().min(1)),
+    locations: z.record(z.string(), z.string().min(1)),
+    departments: z.record(z.string(), z.string().min(1)),
+    beds: z.record(z.string(), z.string().min(1)),
+    equipment: z.record(z.string(), z.string().min(1)),
   }),
-  freshnessLimitsMinutes: z.record(z.number().positive()),
+  freshnessLimitsMinutes: z.record(z.string(), z.number().positive()),
   sopFile: z.string().min(1),
-  timeThresholdOverrides: z.record(z.number().nonnegative()),
+  timeThresholdOverrides: z.record(z.string(), z.number().nonnegative()),
   connector: z.object({
     port: z.number().int().min(1).max(65535),
     ingestUrl: z.string().url(),
