@@ -1,0 +1,32 @@
+{
+  "name": "pulse-nexus",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "test": "vitest run",
+    "connector": "tsc -p connector/tsconfig.json && node connector/dist/connector/server.js",
+    "connector:demo": "tsc -p connector/tsconfig.json && (node connector/dist/connector/server.js & server_pid=$!; trap 'kill $server_pid' EXIT; sleep 1; node connector/dist/scripts/send-sample-hl7.js)"
+  },
+  "dependencies": {
+    "next": "16.4.3",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@tailwindcss/turbopack": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.3",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "tsx": "^4.19.2",
+    "vitest": "^3.2.4"
+  }
+}

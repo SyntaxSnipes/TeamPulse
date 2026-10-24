@@ -1,0 +1,26 @@
+{
+  "synthetic": true,
+  "parallelGroups": [["ECG","BLOOD_TEST","XRAY","CT"]],
+  "pathways": {
+    "TRAUMA": {
+      "allowedTransitions": [["ARRIVAL","TRIAGE"],["TRIAGE","DOCTOR"],["DOCTOR","XRAY"],["DOCTOR","CT"],["XRAY","CT"],["CT","RESULTS"],["RESULTS","SURGERY"],["RESULTS","ADMIT"]],
+      "prerequisites": {"RESULTS":["BLOOD_TEST","XRAY","CT","ECG"],"SURGERY":["DOCTOR"]},
+      "defaultMaxMinutes": {"ARRIVAL":15,"TRIAGE":20,"DOCTOR":30,"XRAY":24,"CT":35,"RESULTS":30}
+    },
+    "STROKE": {
+      "allowedTransitions": [["ARRIVAL","TRIAGE"],["TRIAGE","DOCTOR"],["DOCTOR","CT"],["CT","BLOOD_TEST"],["BLOOD_TEST","RESULTS"],["RESULTS","ADMIT"]],
+      "prerequisites": {"RESULTS":["BLOOD_TEST","CT"]},
+      "defaultMaxMinutes": {"ARRIVAL":15,"TRIAGE":15,"DOCTOR":20,"CT":25,"BLOOD_TEST":20,"RESULTS":25}
+    },
+    "CHEST_PAIN": {
+      "allowedTransitions": [["ARRIVAL","TRIAGE"],["TRIAGE","DOCTOR"],["DOCTOR","ECG"],["ECG","BLOOD_TEST"],["BLOOD_TEST","RESULTS"],["RESULTS","DISCHARGE"],["RESULTS","ADMIT"]],
+      "prerequisites": {"RESULTS":["BLOOD_TEST","ECG"]},
+      "defaultMaxMinutes": {"ARRIVAL":15,"TRIAGE":20,"DOCTOR":30,"ECG":15,"BLOOD_TEST":30,"RESULTS":30}
+    },
+    "MINOR_INJURY": {
+      "allowedTransitions": [["ARRIVAL","TRIAGE"],["TRIAGE","DOCTOR"],["DOCTOR","XRAY"],["XRAY","DISCHARGE"]],
+      "prerequisites": {},
+      "defaultMaxMinutes": {"ARRIVAL":20,"TRIAGE":30,"DOCTOR":35,"XRAY":30}
+    }
+  }
+}

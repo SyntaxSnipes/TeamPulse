@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ER FlowGuard</title>
+<style>
+:root{--bg:#f3f5f7;--fg:#14202b;--mut:#64748b;--card:#fff;--line:#dde3ea;--ok:#12906a;--warn:#c77d00;--bad:#d32f2f;--acc:#2563eb;--pur:#7c4dcc;--nav:#0f2a43;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e141b;--fg:#e6edf3;--mut:#8b9bb0;--card:#17202a;--line:#2a3745;--ok:#3ecf9f;--warn:#f0a830;--bad:#ff6b6b;--acc:#6ea8ff;--pur:#b794f6;--nav:#0a1520;color-scheme:dark}}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font:14px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif;padding-bottom:84px}
+header{background:var(--nav);color:#fff;padding:10px 14px;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+.brand{display:flex;align-items:center;gap:8px;font-weight:700;font-size:17px}
+nav{display:flex;gap:4px;flex:1}nav button{background:none;border:0;color:#b9c8d8;font:inherit;font-size:13.5px;padding:7px 12px;border-radius:8px;cursor:pointer}nav button.on{background:#ffffff1f;color:#fff;font-weight:600}
+.hr{display:flex;gap:10px;align-items:center;font-size:12.5px}
+select{font:inherit;font-size:13px;padding:5px 8px;border-radius:8px;border:1px solid #ffffff44;background:#ffffff14;color:#fff}select option{color:#000}
+.live{display:flex;align-items:center;gap:6px}.live i{width:8px;height:8px;border-radius:50%;background:#3ddc97;animation:p 1.4s infinite}
+@keyframes p{50%{opacity:.25}}
+#strip{background:var(--card);border-bottom:1px solid var(--line);padding:6px 14px;font-size:12.5px;color:var(--mut)}#strip b{color:var(--fg)}
+#bn{display:none;background:var(--bad);color:#fff;padding:12px 14px}
+#bn .in{max-width:1150px;margin:auto;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center}
+#bn .tag{font-weight:800;letter-spacing:.08em;font-size:12px;background:#fff;color:var(--bad);padding:3px 9px;border-radius:5px;animation:p 1s infinite}
+#bn h2{margin:0;font-size:18px}#bn p{margin:2px 0 0;font-size:13.5px;opacity:.95}#bn .tx{flex:1;min-width:240px}
+#bn button{background:#fff;color:var(--bad);border:0;font:inherit;font-weight:700;padding:8px 14px;border-radius:8px;cursor:pointer}#bn button.g{background:#ffffff33;color:#fff}
+main{max-width:1150px;margin:auto;padding:12px}.view{display:none}.view.on{display:block}
+.cols{display:grid;gap:12px}@media(min-width:960px){.cols{grid-template-columns:1.55fr 1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:12px;box-shadow:0 1px 2px #0000000a}
+h3{margin:0 0 8px;font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--mut);display:flex;justify-content:space-between}
+svg{width:100%;height:auto;display:block}
+.rm{fill:var(--card);stroke:var(--line);stroke-width:1.5}.rt{font-size:11px;font-weight:700;fill:var(--fg)}.rc{font-size:10px;fill:var(--mut);text-anchor:end}
+.bd{fill:none;stroke:var(--line);stroke-width:1.2}.bd.bg{fill:var(--line);stroke:none}.bd.p{fill:color-mix(in srgb,var(--acc) 12%,var(--card));stroke:var(--acc)}.bd.h{stroke:var(--warn);stroke-dasharray:3 2;stroke-width:1.6}
+.pt{transition:transform .8s ease;cursor:pointer}.pt text{fill:#fff;font-size:8.5px;font-weight:700;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.pt.sel circle.dt{stroke:var(--fg);stroke-width:2.5}.pt.ex circle.dt{stroke:var(--pur);stroke-width:2.5;stroke-dasharray:3 2}
+.bg-badge{fill:var(--bad);animation:p 1s infinite}.bgt{fill:#fff;font-size:12px;font-weight:800;text-anchor:middle;dominant-baseline:central}
+.leg{display:flex;flex-wrap:wrap;gap:12px;font-size:11.5px;color:var(--mut);margin-top:8px}.leg i{display:inline-block;width:11px;height:11px;border-radius:3px;border:1.5px solid var(--line);margin-right:4px;vertical-align:-2px}
+.al{border-radius:10px;padding:9px 11px;margin-bottom:8px;border:1px solid var(--line);border-left:6px solid var(--mut);cursor:pointer;background:var(--card)}
+.al.emg{border-left-color:var(--bad);background:color-mix(in srgb,var(--bad) 9%,var(--card))}.al.err{border-left-color:var(--warn);background:color-mix(in srgb,var(--warn) 9%,var(--card))}.al.dly{border-left-color:var(--warn)}.al.iso{border-left-color:var(--pur)}.al.info{border-left-color:var(--acc)}
+.al .t{font-weight:700;font-size:14px;margin:3px 0}.al .b{font-size:12.5px;color:var(--mut)}.al .ft{display:flex;flex-wrap:wrap;gap:4px;align-items:center;margin-top:6px;font-size:11px}
+.pill{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.04em;padding:2px 8px;border-radius:99px;color:#fff;white-space:nowrap}
+.k-emg{background:var(--bad)}.k-err{background:var(--warn)}.k-dly{background:var(--warn)}.k-iso{background:var(--pur)}.k-info{background:var(--acc)}.ok{background:var(--ok)}.gry{background:var(--mut)}
+.chip{font-size:11px;border:1px solid var(--line);border-radius:6px;padding:1px 7px;background:var(--card);color:var(--fg)}.chip.s{border-color:var(--ok);color:var(--ok)}.chip.a{border-color:var(--warn);color:var(--warn)}.chip.g{border-color:var(--acc);color:var(--acc)}
+button.sm{font:inherit;font-size:12px;padding:4px 10px;border-radius:7px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer}button.pr{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:600}
+.rs{display:flex;align-items:center;gap:8px;font-size:12.5px;margin:5px 0}.rs b{flex:0 0 92px;font-weight:600}.rs .bar{flex:1;height:8px;background:var(--line);border-radius:4px;overflow:hidden}.rs .bar i{display:block;height:100%}.rs span{flex:0 0 60px;text-align:right;color:var(--mut)}
+.pk{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}.pk button{font:inherit;font-size:12.5px;padding:6px 11px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);cursor:pointer}.pk button.on{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 12%,var(--card));font-weight:600}
+.stp{display:grid;grid-template-columns:30px 1fr;gap:0 8px}.stp .ic{display:flex;flex-direction:column;align-items:center}.stp .ic i{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;font-style:normal;flex:none}.stp .ic u{flex:1;width:2px;background:var(--line);min-height:12px}
+.stp .bd2{padding-bottom:12px}.stp .l{font-weight:600}.stp .m{font-size:12px;color:var(--mut)}
+.ho{margin:2px 0 8px;font-size:11.5px;color:var(--pur);font-weight:600}
+#ctl{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));display:flex;gap:12px;align-items:center;z-index:5}
+#ctl input{flex:1}#ctl b{min-width:96px;font-variant-numeric:tabular-nums}
+canvas{width:100%;display:block;border-radius:8px;background:color-mix(in srgb,var(--bg) 60%,var(--card))}
+footer{max-width:1150px;margin:auto;padding:0 12px 12px;font-size:11.5px;color:var(--mut)}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}.warn{background:var(--warn)}.bad{background:var(--bad)}.chip.on{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 15%,var(--card))}
+.hlr{fill:none;stroke:var(--acc);stroke-width:3.5;animation:p 1.2s infinite}#wf .cols{display:block}
+.fr{display:grid;grid-template-columns:44px 1fr 18px 1fr;gap:8px;padding:7px 0;border-top:1px solid var(--line);font-size:12.5px;align-items:start;animation:fi 1s}@keyframes fi{from{background:color-mix(in srgb,var(--acc) 20%,transparent)}}
+.fr pre{margin:3px 0 0;font:11px/1.35 ui-monospace,Menlo,monospace;white-space:pre-wrap;word-break:break-all;color:var(--mut)}
+@media(max-width:600px){.fr{grid-template-columns:40px 1fr}.fr .ar{display:none}}
+.tg{font-size:10px;font-weight:700;padding:1px 6px;border-radius:99px;color:#fff;background:var(--warn)}.tg.m{background:var(--ok)}
+.fw{display:grid;gap:12px}@media(min-width:900px){.fw{grid-template-columns:430px 1fr}}.fw .row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+button.sm.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.nd rect{fill:var(--card);stroke:var(--line);stroke-width:1.3;cursor:pointer}.nd text{fill:var(--fg);font-size:10.5px;font-weight:600;text-anchor:middle;dominant-baseline:central;pointer-events:none}.nd .sb{font-size:8px;font-weight:400;fill:var(--mut)}
+.nd.v rect{stroke:var(--ok);fill:color-mix(in srgb,var(--ok) 14%,var(--card))}.nd.c rect{stroke:var(--acc);stroke-width:2.8}.nd.bad rect{stroke:var(--bad);stroke-width:2.8}.nd.sel rect{stroke:var(--fg);stroke-dasharray:3 2}
+.bar2{display:flex;align-items:center;gap:8px;margin:5px 0;font-size:13px}.bar2 i{display:block;height:8px;border-radius:4px}.bar2 .t{flex:0 0 118px}.bar2 .n{color:var(--mut);font-size:12px;margin-left:auto;white-space:nowrap}
+.path{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:7px 0;border-top:1px solid var(--line);font-size:12.5px}.path:first-child{border:0;padding-top:0}
+pre.api{margin:6px 0 0;padding:8px;background:color-mix(in srgb,var(--line) 35%,transparent);border-radius:8px;font:11px/1.45 ui-monospace,Menlo,monospace;overflow-x:auto;white-space:pre}
+.log{list-style:none;margin:0;padding:0;font-size:13px}.log li{padding:6px 0;border-top:1px solid var(--line);cursor:pointer}.msg{font-size:13px;color:var(--mut)}.big{font-size:17px;font-weight:600}
+</style></head><body>
+<header><div class="brand"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 2 4 5v6c0 5 3.4 9 8 11 4.6-2 8-6 8-11V5z" fill="#3ddc97"/><path d="M12 7v10M7 12h10" stroke="#0f2a43" stroke-width="2.4" stroke-linecap="round"/></svg>ER FlowGuard</div>
+<nav><button data-tab="map" class="on">Hospital Map</button><button data-tab="net">Flow Network</button></nav>
+<div class="hr"><span class="live"><i></i>LIVE <span id="clk">14:00</span></span><label>Role <select id="role"></select></label></div></header>
+<div id="strip"></div><div id="bn"></div>
+<main>
+<section class="view on" id="v-map"><div class="cols"><div>
+<div class="card"><h3><span>Emergency Department · floor plan</span><span id="mcnt"></span></h3><svg id="m" viewBox="0 0 640 262"></svg>
+<div class="leg"><span><i style="background:var(--line)"></i>occupied (anonymous)</span><span><i style="border-color:var(--acc);background:#2563eb22"></i>patient bed</span><span><i style="border-color:var(--warn);border-style:dashed"></i>held for incoming</span><span><i></i>free</span><span style="color:var(--bad)">● alert location</span><span>Click a patient dot for the workflow</span></div></div>
+<div class="card"><h3><span>Live device feed · data parsing</span><span id="fcnt"></span></h3><div class="chips" id="dv"></div><div id="fd"></div></div>
+<div id="wfc"><div class="pk" id="pk"></div><div id="wf"></div></div></div>
+<div><div class="card"><h3><span>Alerts and team notifications</span></h3><div id="al"></div></div>
+<div class="card"><h3><span>Capacity and resources</span></h3><div id="cap"></div><div id="stf" style="display:flex;flex-wrap:wrap;gap:5px;margin-top:8px"></div></div></div></div></section>
+
+<section class="view" id="v-net"><div class="fw"><div class="card"><h3><span>Learned pathway graph</span><span>3,000 simulated visits</span></h3>
+<div class="row" id="fcx"></div><div class="row" id="fsc"></div><svg id="fg" viewBox="0 0 400 520"></svg>
+<div class="leg"><span style="color:var(--mut)">━ learned flow</span><span style="color:var(--acc)">┅ predicted</span><span style="color:var(--ok)">━ path taken</span><span style="color:var(--bad)">┅ anomaly</span><span>Click any node for its API call and analytics</span></div></div>
+<div><div class="card"><div class="row"><button class="sm pr" id="fnx">Next event ▶</button><button class="sm" id="frs">Reset</button></div><div id="fnow"></div></div>
+<div class="card"><h3><span>Predicted pathways</span></h3><div id="fpath"></div></div>
+<div class="card"><h3><span>AI diagnosis · pre-coded demo</span></h3><div id="fdxp"></div></div>
+<div class="card"><h3><span>Node inspector</span><span><button class="sm" data-fm="api">API call</button> <button class="sm" data-fm="an">Analytics</button></span></h3><div id="fapi"></div></div>
+<div class="card"><h3><span>Patient timeline</span></h3><ul class="log" id="flog"></ul></div></div></div></section>
+</main>
+<footer>Least privilege: each role sees only the minimum patient data its duties need. Everything else appears as anonymous occupancy. Access is logged in a real deployment. Simulated data, not for clinical use.</footer>
+<div id="ctl"><button class="sm pr" id="pl">Pause</button><b id="ctime">14:00</b><input type="range" id="sl" min="0" max="100" value="0"><span style="font-size:12px;color:var(--mut)">shift timeline</span></div>
+<script>
+const $=i=>document.getElementById(i),hm=m=>{const t=840+Math.floor(m);return String(Math.floor(t/60)).padStart(2,'0')+':'+String(t%60).padStart(2,'0')};
+const RL={charge:['Charge Nurse','full',()=>1],ed:['ED Physician','full',()=>1],cath:['Cath Lab Team','min',p=>p.id=='P-2041'],icu:['ICU Charge RN','min',p=>p.id=='P-2041'||p.id=='P-2057'],house:['Housekeeping','none',()=>0]};
+const RN={charge:'Charge RN',ed:'ED physician',cath:'Cath team',icu:'ICU charge RN',house:'Housekeeping'};
+const RM={WR:['Waiting room',10,10,200,112,8,4],TR:['Triage',220,10,110,112,3,1],BAY:['ED bays',340,10,170,112,4,1],CATH:['Cath lab',520,10,110,112,1,0],ISO:['Isolation',10,140,120,112,1,0],RES:['Resus',140,140,170,112,2,0],ICU:['ICU',320,140,310,112,4,1]};
+const AL=(k,t,b,m,to)=>({k,t,b,m,to});
+const PT=[
+{id:'P-2041',as:'58M',cc:'Chest pain',rs:'STEMI activation',arr:0,h:[['CATH',16,31],['ICU',70,92]],s:[['Arrival','WR',0,0,'Triage RN'],['Triage','TR',8,7,'Triage RN','Chest pain protocol: ECG within 10 min'],['ECG','BAY',15,14,'ED RN','12-lead acquired'],['STEMI confirmed','BAY',16,16,'ED physician','ST elevation V2 to V5',AL('emg','STEMI: Cath Lab pre-alert','P-2041, 58M chest pain. ST elevation V2 to V5, door-to-ECG 14 min. Transfer ETA ~15 min. Door-to-balloon target 90 min.','P-2041: STEMI activation. Transfer to Cath Lab, ETA ~15 min.',['charge','ed','cath'])],['Cath activation authorized','BAY',25,22,'Cardiologist on-call','Cath lab and team assigned'],['Transfer to Cath Lab','CATH',35,31,'Cath team','Handoff from ED'],['PCI','CATH',90,70,'Cath team','Stent placed',AL('info','ICU pre-alert: post-PCI admission','P-2041 PCI complete. ICU bed held. Handoff Cath team to ICU team.','P-2041: post-PCI admission, ICU bed held.',['charge','cath','icu'])],['ICU admission','ICU',105,92,'ICU team','Handoff from Cath team']]},
+{id:'P-2057',as:'71F',cc:'Fever, low BP',rs:'Sepsis, ICU admission',arr:10,h:[['ICU',9,85]],s:[['Arrival','WR',0,0,'Triage RN'],['Triage','TR',8,6,'Triage RN','SBP 82, lactate 4.1'],['Sepsis criteria met','TR',10,9,'ED physician','Sepsis bundle started',AL('emg','Sepsis bundle: Resus and ICU pre-alert','P-2057, 71F fever, SBP 82, lactate 4.1. Move to Resus, antibiotics within 60 min. ICU bed held pending authorization.','P-2057: sepsis, likely ICU admission. Bed held pending authorization.',['charge','ed','icu'])],['Transfer to Resus','RES',15,13,'Resus team','Handoff from Triage'],['ICU bed authorized','RES',30,28,'ICU charge RN','Authorized by ICU charge RN'],['Antibiotics given','RES',45,52,'Resus team','7 min past target',AL('dly','Delay: antibiotics 7 min late','P-2057 antibiotics given at 52 min vs 45 min target. Check Resus workload.','P-2057: antibiotic delay.',['charge','ed'])],['ICU admission','ICU',90,85,'ICU team','Handoff from Resus team']]},
+{id:'P-2063',as:'24F',cc:'Fever, rash',rs:'Airborne isolation',arr:20,h:[['ISO',15,24]],s:[['Arrival','WR',0,0,'Triage RN'],['Triage','TR',10,12,'Triage RN','Unvaccinated, rash 3 days'],['Suspected measles flagged','TR',15,15,'ED physician','AI-read triage note, 91% confidence',AL('iso','Airborne isolation: suspected measles','P-2063, 24F fever and rash, unvaccinated. Move to Isolation. Contact: P-2057 shared Waiting room 3 min. Clean Waiting room and Triage.','Airborne precaution: Waiting room and Triage need terminal cleaning.',['charge','ed','house'])],['Transfer to Isolation','ISO',25,24,'ED physician + Infection control','Negative-pressure room'],['Waiting + Triage cleaned','ISO',40,38,'Housekeeping','Contacts traced: 1']]},
+{id:'P-2070',as:'45M',cc:'Chest pain, low risk',rs:'Chest pain workup',arr:5,h:[],s:[['Arrival','WR',0,0,'Triage RN'],['Triage','TR',8,8,'Triage RN','Low-risk score'],['ECG','BAY',20,18,'ED RN','Normal'],['Discharge order','BAY',40,40,'ED physician','Troponin not yet resulted',AL('err','Workflow error: discharge order held','P-2070 discharge ordered before troponin resulted. Not an emergency escalation. Order held for ED physician review.','Discharge order held pending lab result.',['charge','ed']),1],['Troponin resulted','BAY',45,55,'Lab','Negative x2'],['Discharge','DC',65,62,'Discharge RN','Verified: workup complete']]}];
+const STF=[['Cath team A',15,22],['ICU charge RN',9,38],['Infection control',35,44],['Housekeeping team 2',35,58]];
+let role='charge',tab='map',sel='P-2041',now=0,playing=true,acks=new Set(),hl=null,D={};
+const cl=m=>m>=0?m:0,txt=a=>RL[role][1]=='full'?a.b:a.m,can=p=>RL[role][2](p),vis=p=>can(p)&&now>=p.arr;
+function derive(){PT.forEach(p=>{const S=p.s.map((s,i)=>{const[l,loc,ex,at,ow,nt,al,er]=s,abs=p.arr+at,due=p.arr+ex,done=now>=abs;return{i,l,loc,ex,at,ow,nt,al,er,abs,due,done,st:done?(er?'held':at-ex>3?'late':'ok'):(now>due?'over':'pend')}});let loc=null;S.forEach(s=>{if(s.done&&!s.er)loc=s.loc});D[p.id]={S,cur:S.findIndex(s=>!s.done&&!s.er),loc,path:S.filter(s=>s.done&&!s.er).map(s=>s.loc).filter((x,i,a)=>i==0||a[i-1]!=x)}})}
+function alerts(){const o=[];PT.forEach(p=>D[p.id].S.forEach(s=>{if(s.al&&s.done&&s.al.to.includes(role))o.push({...s.al,pid:p.id,p,key:p.id+s.i,abs:s.abs})}));return o.sort((a,b)=>(a.k=='emg'?0:1)-(b.k=='emg'?0:1)||b.abs-a.abs)}
+const KT={emg:'EMERGENCY ESCALATION · VERIFIED',err:'WORKFLOW ERROR · ORDER HELD',dly:'DELAY',iso:'ISOLATION PRECAUTION',info:'NOTIFICATION'};
+function notif(a){return a.to.map(r=>{const rd=acks.has(a.key+r)||(r!=role&&now-a.abs>=2);return `<span class="chip ${rd?'s':'g'}">${RN[r]} ${rd?'✓ read':'sent'}</span>`}).join('')}
+function card(a,bn){const sh=can(a.p)&&!bn;const need=(a.k=='emg'||a.k=='err')&&!acks.has(a.key+role);
+return `<div class="al ${a.k}" ${can(a.p)?`data-open="${a.pid}"`:''}><span class="pill k-${a.k}">${KT[a.k]}</span> <small style="color:var(--mut)">${hm(a.abs)}</small><div class="t">${a.t}</div><div class="b">${txt(a)}</div><div class="ft">${notif(a)}${need?`<button class="sm pr" data-ack="${a.key}">Acknowledge</button>`:''}${can(a.p)?`<button class="sm" data-open="${a.pid}">Workflow →</button>`:''}</div></div>`}
+const WID={WR:0,TR:0};
+function dirty(k){return(k=='WR'||k=='TR')&&now>=35&&now<58}
+function slots(){const o={};for(const k in RM){const[n,x,y,w,h,cap,bg]=RM[k];const a=[];for(let i=0;i<bg;i++)a.push({t:'bg'});PT.filter(p=>D[p.id].loc==k&&now>=p.arr).forEach(p=>a.push({t:'p',p}));PT.forEach(p=>p.h.forEach(([r,f,t])=>{if(r==k&&now>=p.arr+f&&now<p.arr+t&&D[p.id].loc!=k)a.push({t:'h'})}));while(a.length<cap)a.push({t:'f'});o[k]=a.slice(0,cap)}return o}
+const bx=(k,i)=>{const[n,x,y,w]=RM[k],c=Math.floor((w-20)/26);return[x+12+(i%c)*26,y+48+Math.floor(i/c)*26]};
+function initMap(){let s='<defs><pattern id="hh" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line y2="7" stroke="var(--warn)" stroke-width="3" opacity=".35"/></pattern></defs>';
+for(const k in RM){const[n,x,y,w,h]=RM[k];s+=`<rect class="rm" x="${x}" y="${y}" width="${w}" height="${h}" rx="10"/><text class="rt" x="${x+10}" y="${y+18}">${n}</text><text class="rc" id="rc_${k}" x="${x+w-10}" y="${y+18}"></text>`}
+s+='<g id="bars"></g><g id="beds"></g><g id="route"></g>'+PT.map(p=>`<g class="pt" id="t_${p.id}"><circle class="dt" r="10"/><text>${p.id.slice(-2)}</text></g>`).join('')+'<g id="bdg"></g>';$('m').innerHTML=s}
+const CRI={'P-2041':3,'P-2057':2};function tc(p,k){const d=D[p.id];if(p.id=='P-2063'&&d.S[2].done)return 'var(--pur)';if(CRI[p.id]!=null&&d.S[CRI[p.id]].done&&k!='ICU')return 'var(--bad)';return 'var(--acc)'}
+function renderMap(){const sl=slots();let b='',br='';
+for(const k in RM){const[n,x,y,w,h,cap]=RM[k],a=sl[k],c=a.filter(z=>z.t!='f').length,pc=c/cap;$('rc_'+k).textContent=`${cap-c} free / ${cap}`;
+br+=`<rect x="${x+10}" y="${y+26}" width="${w-20}" height="5" rx="2.5" fill="var(--line)"/><rect x="${x+10}" y="${y+26}" width="${(w-20)*pc}" height="5" rx="2.5" fill="${pc>.85?'var(--bad)':pc>.6?'var(--warn)':'var(--ok)'}"/>`;
+a.forEach((z,i)=>{const[bxx,byy]=bx(k,i);b+=`<rect class="bd ${z.t=='bg'?'bg':z.t=='p'?'p':z.t=='h'?'h':''}" x="${bxx}" y="${byy}" width="20" height="20" rx="4"/>`});
+if(hl==k)b+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="10" fill="none" stroke="var(--acc)" stroke-width="3.5" class="hlr"/>`;
+if(dirty(k))b+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="10" fill="url(#hh)" pointer-events="none"/><text x="${x+w/2}" y="${y+h-8}" text-anchor="middle" font-size="10" font-weight="700" fill="var(--warn)">cleaning needed</text>`}
+$('bars').innerHTML=br;$('beds').innerHTML=b;
+PT.forEach(p=>{const g=$('t_'+p.id),k=D[p.id].loc,v=vis(p);if(!k||now<p.arr||!sl[k]){g.style.opacity=0;g._i=0;return}g.style.opacity=1;const i=sl[k].findIndex(z=>z.p==p),[X,Y]=bx(k,Math.max(i,0));const tr=`translate(${X+10}px,${Y+10}px)`;if(!g._i){g.style.transition='none';g.style.transform=tr;g.getBoundingClientRect();g.style.transition='';g._i=1}else g.style.transform=tr;
+const dt=g.querySelector('.dt');dt.setAttribute('fill',v?tc(p,k):'var(--mut)');
+g.querySelector('text').style.opacity=v?1:0;g.classList.toggle('sel',v&&sel==p.id);g.classList.toggle('ex',v&&p.id=='P-2057'&&now>=35);g.style.pointerEvents=v?'auto':'none';g.dataset.pid=v?p.id:''});
+let r='';const sp=PT.find(p=>p.id==sel);if(sp&&vis(sp)){const pa=D[sp.id].path.filter(k=>RM[k]).map(k=>{const q=RM[k];return[q[1]+q[3]/2,q[2]+q[4]-12]});if(pa.length>1)r=`<polyline points="${pa.map(z=>z.join(',')).join(' ')}" fill="none" stroke="var(--acc)" stroke-width="2.5" stroke-dasharray="6 4" opacity=".8"/>`+pa.slice(0,-1).map(z=>`<circle cx="${z[0]}" cy="${z[1]}" r="3.5" fill="var(--acc)"/>`).join('')}
+$('route').innerHTML=r;
+let bd='';alerts().filter(a=>a.k=='emg'&&!acks.has(a.key+role)&&can(a.p)&&RM[D[a.pid].loc]).forEach(a=>{const q=RM[D[a.pid].loc];bd+=`<g transform="translate(${q[1]+q[3]-14},${q[2]+10})"><circle class="bg-badge" r="9"/><text class="bgt">!</text></g>`});$('bdg').innerHTML=bd;
+$('mcnt').textContent=`${PT.filter(vis).length} of ${PT.filter(p=>now>=p.arr).length} patients visible to your role`;
+const A=alerts();$('al').innerHTML=A.slice(0,6).map(a=>card(a)).join('')||'<div style="color:var(--mut)">No alerts for your role yet.</div>';
+$('cap').innerHTML=Object.keys(RM).map(k=>{const a=sl[k],c=a.filter(z=>z.t!='f').length,pc=c/RM[k][5];return `<div class="rs"><b>${RM[k][0]}</b><div class="bar"><i style="width:${pc*100}%;background:${pc>.85?'var(--bad)':pc>.6?'var(--warn)':'var(--ok)'}"></i></div><span>${RM[k][5]-c} free</span></div>`}).join('');
+$('stf').innerHTML=STF.map(([n,a,b])=>{const st=now>=b?'assigned':now>=a?'authorization pending':'available';return `<span class="chip ${now>=b?'g':now>=a?'a':'s'}">${n}: ${st}</span>`}).join('')}
+function banner(){const e=alerts().find(a=>a.k=='emg'&&!acks.has(a.key+role));const b=$('bn');if(!e){b.style.display='none';return}b.style.display='block';
+b.innerHTML=`<div class="in"><span class="tag">EMERGENCY</span><div class="tx"><h2>${e.t}</h2><p>${hm(e.abs)} · ${txt(e)}</p><p style="font-size:12px;opacity:.9">Notified: ${e.to.map(r=>RN[r]).join(', ')}</p></div>${can(e.p)?`<button data-open="${e.pid}">Open workflow</button>`:''}<button class="g" data-ack="${e.key}">Acknowledge</button></div>`}
+const SC={ok:'var(--ok)',late:'var(--warn)',held:'var(--bad)',over:'var(--bad)',pend:'var(--mut)'};
+function wf(){const vp=PT.filter(vis);$('pk').innerHTML=vp.map(p=>`<button class="${p.id==sel?'on':''}" data-open="${p.id}">${p.id}${RL[role][1]=='full'?' · '+p.cc:' · '+p.rs}</button>`).join('');
+if(!vp.length){$('wf').innerHTML=`<div class="card"><h3><span>No patient access</span></h3>Your role (${RL[role][0]}) does not include patient workflows. You receive room and task alerts only. Open the Hospital Map for cleaning and room status.</div>`;return}
+if(!vp.find(p=>p.id==sel))sel=vp[0].id;const p=PT.find(q=>q.id==sel),d=D[p.id],full=RL[role][1]=='full',X=o=>60+o/110*570;
+let g=`<text x="4" y="34" font-size="10" fill="var(--mut)">Plan</text><text x="4" y="80" font-size="10" fill="var(--mut)">Actual</text><line x1="56" x2="634" y1="30" y2="30" stroke="var(--line)"/><line x1="56" x2="634" y1="76" y2="76" stroke="var(--line)"/>`;
+d.S.forEach(s=>{g+=`<circle cx="${X(s.ex)}" cy="30" r="8" fill="var(--card)" stroke="var(--mut)"/><text x="${X(s.ex)}" y="30" font-size="8.5" text-anchor="middle" dominant-baseline="central" fill="var(--mut)">${s.i+1}</text>`;
+if(s.done)g+=`<line x1="${X(s.ex)}" y1="38" x2="${X(s.at)}" y2="68" stroke="${SC[s.st]}" stroke-width="1.5" opacity=".6"/><circle cx="${X(s.at)}" cy="76" r="8" fill="${SC[s.st]}"/><text x="${X(s.at)}" y="76" font-size="8.5" text-anchor="middle" dominant-baseline="central" fill="#fff">${s.i+1}</text>`});
+const nx=cl(now-p.arr);g+=`<line x1="${X(Math.min(nx,110))}" x2="${X(Math.min(nx,110))}" y1="46" y2="98" stroke="var(--acc)" stroke-width="2" stroke-dasharray="3 3"/><text x="${X(Math.min(nx,110))}" y="108" font-size="9.5" text-anchor="middle" fill="var(--acc)">now ${hm(now)}</text>`;
+let st='',prev='';d.S.forEach(s=>{if(prev&&prev!=s.ow&&prev.split(' ')[0]!=s.ow.split(' ')[0])st+=`<div class="stp"><div></div><div class="ho">⇄ Handoff of responsibility: ${prev} → ${s.ow}</div></div>`;prev=s.ow;
+const ic=s.st=='ok'||s.st=='late'?'✓':s.st=='held'?'!':s.i==d.cur?'●':'○',lt=s.done?(s.st=='held'?'Held at '+hm(s.abs):`Done ${hm(s.abs)} (plan ${hm(s.due)}${s.st=='late'?', +'+(s.at-s.ex)+' min late':''})`):(now>s.due?`Overdue by ${Math.floor(now-s.due)} min (plan ${hm(s.due)})`:`Due ${hm(s.due)} (in ${Math.ceil(s.due-now)} min)`);
+st+=`<div class="stp"><div class="ic"><i style="background:${SC[s.st]};${s.i==d.cur?'animation:p 1.2s infinite':''}">${ic}</i><u></u></div><div class="bd2"><div class="l">${s.l} <button class="sm" data-room="${s.loc}">📍 ${RM[s.loc]?RM[s.loc][0]:'Discharge'}</button></div><div class="m">${s.ow} · ${lt}</div>${full&&s.nt&&s.done?`<div class="m">${s.nt}</div>`:''}</div></div>`});
+const c=d.cur>=0?d.S[d.cur]:null,nxt=d.S[d.cur+1];
+const na=c?`<div class="al ${now>c.due?'err':'info'}" style="cursor:default"><span class="pill ${now>c.due?'k-err':'k-info'}">${now>c.due?'OVERDUE':'NEXT ACTION'}</span><div class="t">${c.l}</div><div class="b">Owner: ${c.ow} · due ${hm(c.due)} · at ${RM[c.loc]?RM[c.loc][0]:'Discharge'}</div><div class="ft"><span class="chip ${now>=c.due-10?'s':'g'}">Pre-alert to ${c.ow}: ${now>=c.due-10?'sent '+hm(c.due-10):'scheduled '+hm(c.due-10)}</span>${nxt?`<span class="chip">Then: ${nxt.l} → ${nxt.ow}</span>`:''}</div></div>`:'<div class="al ok" style="cursor:default"><span class="pill ok">PATHWAY COMPLETE</span><div class="t">All steps verified</div></div>';
+const my=alerts().filter(a=>a.pid==p.id);
+$('wf').innerHTML=`<div class="cols"><div><div class="card"><h3><span>${p.id}${full?` · ${p.as} · ${p.cc}`:` · ${p.rs}`}</span><span>${d.loc?`<button class="sm" data-room="${d.loc}">📍 Now: ${RM[d.loc]?RM[d.loc][0]:'Discharge'}</button>`:''}</span></h3><svg viewBox="0 0 640 114">${g}</svg><div class="leg"><span style="color:var(--ok)">● on time</span><span style="color:var(--warn)">● late</span><span style="color:var(--bad)">● held / overdue</span><span>Hollow = plan, filled = actual</span></div></div>
+<div class="card"><h3><span>Workflow steps</span></h3>${st}</div></div><div>${na}<div class="card" style="margin-top:12px"><h3><span>Alerts for this patient</span></h3>${my.map(a=>card(a)).join('')||'<div style="color:var(--mut)">None.</div>'}</div></div></div>`}
+/* flow network */
+const FN={A:['Arrival',200,34],T:['Triage',200,102],W:['Waiting room',70,172],CT:['CT scan',330,172],P:['Physician',70,248],E:['ECG',200,248],L:['Labs',135,324],O:['Observation',80,404],C:['Consult',265,404],ADM:['Admit',310,488],D:['Discharge',90,488]};
+const FE=[['A','T',[980,990,985],5,12],['T','W',[400,10,610],3,10],['T','P',[430,150,370],12,30],['T','E',[150,10,5],4,10],['T','CT',[0,820,15],6,14],['W','P',[400,10,610],35,90],['P','E',[500,5,20],8,20],['P','L',[120,60,700],10,25],['P','CT',[10,150,220],15,40],['P','D',[5,0,60],10,30],['E','L',[640,10,15],10,25],['E','O',[5,0,0],20,50],['L','O',[520,20,150],30,60],['L','CT',[60,40,300],30,70],['L','C',[120,50,200],25,70],['L','D',[40,0,250],40,90],['CT','L',[2,200,50],15,40],['CT','C',[5,700,120],25,60],['CT','O',[0,40,60],30,70],['CT','D',[0,10,150],30,70],['CT','ADM',[0,60,70],20,50],['C','ADM',[150,600,180],40,90],['C','O',[60,80,100],30,70],['C','D',[10,0,60],30,70],['O','D',[380,10,180],120,240],['O','ADM',[140,60,60],90,180]];
+const FCX=[['Chest pain','ECG'],['Stroke symptoms','CT'],['Abdominal pain',null]];
+const FS=[[['Typical',[['A',0],['T',5],['P',20],['E',28],['L',40],['O',75],['D',210]]],['Delayed',[['A',0],['T',6],['W',9],['P',118],['E',126],['L',140],['O',180],['ADM',300]]],['Unexpected',[['A',0],['T',5],['P',20],['D',45]]]],
+[['Typical',[['A',0],['T',3],['CT',11],['L',30],['C',55],['ADM',95]]],['Delayed',[['A',0],['T',4],['P',38],['CT',80],['C',120],['ADM',190]]],['Unexpected',[['A',0],['T',4],['W',7],['P',60],['CT',85]]]],
+[['Typical',[['A',0],['T',6],['W',9],['P',48],['L',60],['D',100]]],['Delayed',[['A',0],['T',7],['W',10],['P',55],['L',66],['CT',160],['C',195],['ADM',250]]],['Unexpected',[['A',0],['T',6],['W',9],['P',50],['E',58],['ADM',70]]]]];
+const DXL=[['STEMI','NSTEMI / unstable angina','Pulmonary embolism','Low-risk chest pain'],['Ischemic stroke','Hemorrhagic stroke','Stroke mimic (seizure etc.)','TIA'],['Appendicitis','Gastroenteritis','Bowel obstruction','Cholecystitis / other']];
+const DXN=[{A:[8,17,5,70],T:[9,19,6,66],P:[14,24,8,54],E:[62,20,3,15],L:[58,31,3,8],O:[31,52,2,15]},{A:[30,12,38,20],T:[38,14,30,18],CT:[71,16,6,7],L:[74,15,5,6],C:[82,13,3,2]},{A:[20,45,10,25],T:[22,44,10,24],P:[28,36,12,24],L:[46,22,12,20],CT:[63,12,10,15],C:[67,11,10,12]}];
+const NR=[{A:'Chest pain presentation logged. Door time recorded.',T:'Triage acuity ESI 2. Protocol: ECG within 10 minutes.',W:'Waiting for a physician. Reassess if symptoms change.',P:'Physician review. Cardiac workup ordered: ECG and troponin.',E:'ECG read: ST elevation V2 to V5, consistent with anterior STEMI.',L:'Troponin elevated. Supports acute coronary syndrome.',O:'Serial troponins and monitoring under way.'},
+{A:'Stroke alert pre-registered. Last-known-well time requested.',T:'Stroke screen positive. Fast-track to CT.',CT:'Non-contrast CT: early ischemic change, no bleed seen.',P:'Physician review while imaging is pending.',L:'Glucose normal, coagulation pending.',C:'Neurology consult: inside thrombolysis window if onset under 4.5 h.'},
+{A:'Abdominal pain presentation logged.',T:'Triage acuity ESI 3. Pain 7/10, right lower quadrant.',W:'Waiting for a physician.',P:'Exam: focal right lower quadrant tenderness.',L:'WBC and CRP elevated. Raises appendicitis likelihood.',CT:'CT: inflamed appendix, no perforation.',C:'Surgical consult requested.',E:'ECG obtained, not typical for abdominal pain.'}];
+const REC={'STEMI':'Activate cath lab pathway','NSTEMI / unstable angina':'Serial troponins, cardiology consult','Pulmonary embolism':'D-dimer, CT angiogram','Low-risk chest pain':'Complete workup before discharge','Ischemic stroke':'Stroke team, check thrombolysis window','Hemorrhagic stroke':'Neurosurgery consult','Stroke mimic (seizure etc.)':'Continue neurological workup','TIA':'Observe and image','Appendicitis':'Surgical consult','Gastroenteritis':'Fluids and observation','Bowel obstruction':'Imaging and surgical review','Cholecystitis / other':'Ultrasound'};
+let fx=0,fs=0,fst=0,fsel=null,fmode='api',ftm=null;
+const fout=n=>FE.filter(e=>e[0]==n&&e[2][fx]>0),ftot=n=>fout(n).reduce((a,e)=>a+e[2][fx],0),ffind=(a,b)=>FE.find(e=>e[0]==a&&e[1]==b),fm=m=>m>=60?`${Math.floor(m/60)}h ${m%60}m`:`${m} min`,esc=t=>t.replace(/</g,'&lt;');
+const fpct=n=>n=='A'?100:Math.min(100,Math.round(FE.filter(e=>e[1]==n).reduce((a,e)=>a+e[2][fx],0)/ftot('A')*100));
+function fclip(a,b,m){const dx=b[1]-a[1],dy=b[2]-a[2],t=Math.min(40/Math.abs(dx||1e-9),16/Math.abs(dy||1e-9))+m/Math.hypot(dx,dy);return[a[1]+dx*t,a[2]+dy*t]}
+function fline(a,b,c,w,o,d){const p=fclip(FN[a],FN[b],0),q=fclip(FN[b],FN[a],3);return `<line x1="${p[0]}" y1="${p[1]}" x2="${q[0]}" y2="${q[1]}" stroke="var(--${c})" stroke-width="${w}" opacity="${o}" ${d?'stroke-dasharray="5 4"':''} marker-end="url(#f${c})"/>`}
+function fan(){const ev=FS[fx][fs][1].slice(0,fst+1),res=[],seen=new Set([ev[0][0]]);
+for(let i=1;i<ev.length;i++){const a=ev[i-1][0],b=ev[i][0],dt=ev[i][1]-ev[i-1][1],e=ffind(a,b),r={a,b,dt,lvl:'ok',tag:'On track',msg:''};
+if(!e||!e[2][fx]){r.lvl='bad';r.tag='Never seen';r.msg=`${FN[a][0]} → ${FN[b][0]} has no precedent for this complaint. Possible missed handoff, wrong order or charting error.`;r.un=1}
+else{const p=e[2][fx]/ftot(a);if(p<.03){r.lvl='warn';r.tag='Rare path';r.msg=`Only ${(p*100).toFixed(1)}% of similar patients took ${FN[a][0]} → ${FN[b][0]}.`}
+if(dt>e[4]){r.lvl='bad';r.tag='Late';r.msg+=` ${dt} min here; 90% move on within ${e[4]}.`}else if(dt>e[3]*1.5){if(r.lvl=='ok'){r.lvl='warn';r.tag='Slower'}r.msg+=` ${dt} min vs typical ${e[3]}.`}else if(r.lvl=='ok')r.msg=`${dt} min (typical ${e[3]}).`}
+seen.add(b);const rq=FCX[fx][1],rn=rq=='ECG'?'E':rq=='CT'?'CT':null;
+if((b=='D'||b=='ADM')&&rn&&!seen.has(rn)){r.lvl='bad';r.tag='Step skipped';r.msg+=` ${b=='D'?'Discharged':'Admitted'} without ${rq}, expected for ${FCX[fx][0].toLowerCase()}.`}
+res.push(r)}return{ev,res,seen}}
+function fpaths(cur){const R=[];(function d(n,pr,tm,pa,sn){if(n=='D'||n=='ADM'||pa.length>6){R.push({pa,pr,tm});return}const o=fout(n).filter(e=>!sn.has(e[1]));if(!o.length){if(pa.length>1)R.push({pa,pr,tm});return}
+const T=ftot(n);o.forEach(e=>{const p=e[2][fx]/T;if(pr*p>=.02)d(e[1],pr*p,tm+e[3],[...pa,e[1]],new Set([...sn,e[1]]))})})(cur,1,0,[cur],new Set([cur]));return R.filter(r=>r.pa.length>1).sort((a,b)=>b.pr-a.pr).slice(0,3)}
+function fdxs(ev){let k='A';for(let i=ev.length-1;i>=0;i--)if(DXN[fx][ev[i][0]]){k=ev[i][0];break}const pr=DXN[fx][k],m=Math.max(...pr),ti=pr.indexOf(m);return{k,pr,ti,top:DXL[fx][ti],p:m}}
+function fapiH(an){const{ev,res}=an,cur=ev[ev.length-1][0],n=fsel||cur,el=ev[ev.length-1][1],last=res[res.length-1],dx=fdxs(ev);let ix=-1;ev.forEach((e,i)=>{if(e[0]==n)ix=i});const hist=(ix>=0?ev.slice(0,ix+1):ev).map(e=>FN[e[0]][0]),T=ftot(n);
+let h=`<div class="msg">Node: <b style="color:var(--fg)">${FN[n][0]}</b>${n==cur?' (current)':ix<0?' (not visited: what-if query)':' (visited)'}</div>`;
+if(fmode=='api'){const nx=fout(n).sort((a,b)=>b[2][fx]-a[2][fx]).slice(0,3).map(e=>({node:FN[e[1]][0],p:+(e[2][fx]/T).toFixed(2),eta_min:e[3],p90_min:e[4]})),ms=22+(n.charCodeAt(0)*7+el)%41;
+h+=`<pre class="api">POST /v1/flowguard/predict\n{\n  "complaint": "${FCX[fx][0].toLowerCase().replace(/ /g,'_')}",\n  "current_node": "${FN[n][0]}",\n  "elapsed_min": ${el},\n  "history": ${JSON.stringify(hist)}\n}\n\n200 OK · ${ms} ms\n{\n  "next": ${JSON.stringify(nx)},\n  "anomaly": ${!!(last&&last.lvl!='ok')},\n  "flag": ${last&&last.lvl!='ok'?JSON.stringify(last.tag):'null'},\n  "model": "pathway-graph-v2.3",\n  "dx_top": ${JSON.stringify({label:dx.top,p:dx.p/100})}\n}</pre>`}
+else{const o=fout(n),inb=FE.filter(e=>e[1]==n).reduce((a,e)=>a+e[2][fx],0),wm=o.length?Math.round(o.reduce((a,e)=>a+e[2][fx]*e[3],0)/T):0,w9=o.length?Math.round(o.reduce((a,e)=>a+e[2][fx]*e[4],0)/T):0,rare=o.length?Math.round(o.filter(e=>e[2][fx]/T<.03).reduce((a,e)=>a+e[2][fx],0)/T*1000)/10:0;
+const rw=(a,b)=>`<div class="rs"><b style="flex:0 0 140px">${a}</b><span style="flex:1;text-align:left;color:var(--fg)">${b}</span></div>`;
+h+=rw('Historical visits',inb||T)+rw('Share of all visits',fpct(n)+'%')+rw('Typical time to next step',o.length?`${wm} min (90%: ${w9} min)`:'terminal')+rw('Rare exits (under 3%)',rare+'%')+rw('Top exits',o.sort((a,b)=>b[2][fx]-a[2][fx]).slice(0,3).map(e=>`${FN[e[1]][0]} ${Math.round(e[2][fx]/T*100)}%`).join(', ')||'none')+rw('Model confidence',o.length?Math.round(Math.max(...o.map(e=>e[2][fx]))/T*100)+'% on top exit':'n/a')}
+return h}
+function frender(){const an=fan(),{ev,res,seen}=an,cur=ev[ev.length-1][0],term=cur=='D'||cur=='ADM',last=res[res.length-1],el=ev[ev.length-1][1],PA=term?[]:fpaths(cur),top=PA[0];
+let s=`<defs>${['mut','acc','ok','bad'].map(c=>`<marker id="f${c}" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0L8,4L0,8z" fill="var(--${c})"/></marker>`).join('')}</defs>`;
+const nxt=term?[]:fout(cur).map(e=>e[1]);
+FE.forEach(e=>{if(e[2][fx]>0&&!(e[0]==cur&&nxt.includes(e[1]))){const p=e[2][fx]/ftot(e[0]);s+=fline(e[0],e[1],'mut',.6+p*3,.1+p*.4)}});
+if(top)for(let i=1;i<top.pa.length-1;i++)s+=fline(top.pa[i],top.pa[i+1],'acc',2.4,.55,1);
+if(!term)fout(cur).forEach(e=>{const p=e[2][fx]/ftot(cur);s+=fline(cur,e[1],'acc',1.2+p*4,.55+p*.4,1)});
+res.forEach(r=>{s+=fline(r.a,r.b,r.lvl=='bad'?'bad':'ok',3.2,1,r.un)});
+const badN=new Set(res.filter(r=>r.lvl=='bad').map(r=>r.b));
+Object.entries(FN).forEach(([k,[n,x,y]])=>{s+=`<g class="nd ${seen.has(k)?'v':''} ${k==cur?'c':''} ${k==cur&&badN.has(k)?'bad':''} ${fsel==k?'sel':''}" data-fn="${k}"><rect x="${x-40}" y="${y-16}" width="80" height="32" rx="8"/><text x="${x}" y="${y-4}">${n}</text><text class="sb" x="${x}" y="${y+9}">${fpct(k)}% of visits</text></g>`});
+$('fg').innerHTML=s;
+let h=`<div class="msg">${FCX[fx][0]} · ${FS[fx][fs][0]} scenario · ${Math.floor(el/60)}h ${el%60}m since arrival</div><div class="big">${FN[cur][0]} ${last?`<span class="pill ${last.lvl}">${last.tag}</span>`:''}</div>`;
+if(last&&last.msg)h+=`<div class="msg" style="margin:4px 0 6px">${last.msg}</div>`;
+if(term)h+=`<div class="msg">Visit complete. ${res.some(r=>r.lvl=='bad')?'Flagged for review.':res.some(r=>r.lvl=='warn')?'Minor flags only.':'Followed the expected pathway.'}</div>`;
+else{h+=`<div class="msg" style="margin-top:6px">Predicted next step</div>`;fout(cur).sort((a,b)=>b[2][fx]-a[2][fx]).slice(0,4).forEach(e=>{const p=e[2][fx]/ftot(cur);h+=`<div class="bar2"><span class="t">${FN[e[1]][0]}</span><i style="width:${Math.max(3,p*110)}px;background:var(--acc)"></i><b>${Math.round(p*100)}%</b><span class="n">~${e[3]} min (90%: ${e[4]})</span></div>`})}
+$('fnow').innerHTML=h;
+$('fpath').innerHTML=term?'<div class="msg">Pathway complete.</div>':PA.map((r,i)=>`<div class="path"><span class="pill ${i?'gry':'k-info'}">${i?'ALTERNATIVE '+i:'MOST LIKELY'}</span>${r.pa.slice(1).map(k=>`<span class="chip">${FN[k][0]}</span>`).join(' → ')}<b>${Math.round(r.pr*100)}%</b><span class="msg">~${fm(r.tm)} more</span></div>`).join('')||'<div class="msg">No precedent for any continuation from here.</div>';
+const dx=fdxs(ev),nt=NR[fx][cur]||NR[fx][dx.k]||'';
+let d=`<div class="msg" style="margin-bottom:4px">Updated after ${FN[dx.k][0]}</div>`+DXL[fx].map((l,i)=>`<div class="bar2"><span class="t">${l}</span><i style="width:${dx.pr[i]*1.7}px;background:${i==dx.ti?'var(--acc)':'var(--mut)'}"></i><b>${dx.pr[i]}%</b></div>`).join('')+`<div class="al info" style="cursor:default;margin-top:8px"><span class="pill k-info">AI SUMMARY</span><div class="b" style="margin-top:4px">${nt}</div><div class="ft"><span class="chip g">Suggested: ${REC[dx.top]||'Continue workup'}</span></div></div>`;
+if(last&&last.lvl=='bad')d+=`<div class="al err" style="cursor:default"><span class="pill k-err">CONFIDENCE REDUCED</span><div class="b" style="margin-top:4px">Pathway flag: ${last.tag}. Diagnosis is based on incomplete workup; do not rely on it until the missing step is done.</div></div>`;
+$('fdxp').innerHTML=d+'<div class="msg" style="font-size:11.5px;margin-top:6px">Pre-coded demo output, not a live model and not clinical advice.</div>';
+$('fapi').innerHTML=fapiH(an);document.querySelectorAll('[data-fm]').forEach(b=>b.classList.toggle('on',b.dataset.fm==fmode));
+$('flog').innerHTML=ev.map((e,i)=>{const r=res[i-1];return `<li data-fn="${e[0]}"><b>${Math.floor(e[1]/60)}:${String(e[1]%60).padStart(2,'0')}</b> ${FN[e[0]][0]} ${r?`<span class="pill ${r.lvl}">${r.tag}</span>`:''}</li>`}).reverse().join('');
+$('fnx').disabled=fst>=FS[fx][fs][1].length-1;$('fnx').style.opacity=$('fnx').disabled?.4:1}
+function fmenu(){$('fcx').innerHTML=FCX.map((c,i)=>`<button class="sm ${i==fx?'on':''}" data-fc="${i}">${c[0]}</button>`).join('');$('fsc').innerHTML=FS[fx].map((c,i)=>`<button class="sm ${i==fs?'on':''}" data-fsc="${i}">${c[0]}</button>`).join('')+'<button class="sm" id="fpl">▶ Auto-play</button>'}
+function fplay(){clearInterval(ftm);fst=0;fsel=null;frender();ftm=setInterval(()=>{if(fst>=FS[fx][fs][1].length-1){clearInterval(ftm);return}fst++;frender()},1500)}
+document.addEventListener('click',e=>{const q=x=>e.target.closest(x);let t;
+if(t=q('[data-fc]')){clearInterval(ftm);fx=+t.dataset.fc;fs=0;fst=0;fsel=null;fmenu();frender()}
+else if(t=q('[data-fsc]')){clearInterval(ftm);fs=+t.dataset.fsc;fst=0;fsel=null;fmenu();frender()}
+else if(t=q('[data-fn]')){fsel=t.dataset.fn;frender()}
+else if(t=q('[data-fm]')){fmode=t.dataset.fm;frender()}
+else if(q('#fnx')){fst=Math.min(fst+1,FS[fx][fs][1].length-1);fsel=null;frender()}
+else if(q('#frs')){clearInterval(ftm);fst=0;fsel=null;frender()}
+else if(q('#fpl'))fplay()});
+/* device feed */
+const DV=[['Gate reader',0],['BLE tag',1],['ECG cart',0],['Bedside monitor',1],['Nurse terminal',0],['EHR orders',0],['Lab analyzer',0],['eMAR',0],['Cath system',1]];
+const FD=[[0,'BLE tag','Modern JSON','{"tag":"A41F","zone":"WR","rssi":-48}','P-2041','Arrival','Waiting room','Rule parser',99],[5,'BLE tag','Modern JSON','{"tag":"B07C","zone":"WR","rssi":-51}','P-2070','Arrival','Waiting room','Rule parser',99],[7,'Gate reader','Legacy serial','$RF,0017,TR,1*3A','P-2041','Moved','Triage','Rule parser',98],[10,'BLE tag','Modern JSON','{"tag":"C92D","zone":"WR","rssi":-44}','P-2057','Arrival','Waiting room','Rule parser',99],
+[14,'ECG cart','Legacy serial','ECG|0017|HR096|ST V2-V5 +3.1mm','P-2041','ECG','ST elevation V2 to V5, STEMI rule fired','Rule parser',98],[19,'Bedside monitor','FHIR JSON','{"resourceType":"Observation","code":"BP","subject":"P-2057","value":82}','P-2057','Vitals','SBP 82 (critical), sepsis rule fired','Rule parser',99],[31,'Gate reader','Legacy serial','$RF,0017,CATH,1*5C','P-2041','Moved','Cath lab','Rule parser',98],
+[35,'Nurse terminal','Legacy free text','Pt c/o fever 3d, rash spreading from face down. Unvaccinated.','P-2063','Triage note','Suspected measles, isolation rule fired','AI extraction',91],[45,'EHR orders','HL7 v2','MSH|^~\\&|EHR|ED|||ORM^O01\rORC|NW|P-2070\rRXE|DISCHARGE','P-2070','Order','Discharge before troponin: held','Rule parser',99],
+[60,'Lab analyzer','HL7 v2','MSH|^~\\&|ANALYZER|LAB|||ORU^R01\rOBX|1|NM|TROPI||0.01|ng/mL|<0.04|N','P-2070','Troponin','Negative, 0.01 ng/mL','Rule parser',99],[62,'eMAR','HL7 v2','MSH|^~\\&|EMAR|ED|||RAS^O17\rRXA|1|ANTIBIOTIC|GIVEN','P-2057','Medication','Antibiotics given, 7 min late','Rule parser',99],[70,'Cath system','DICOM','C-STORE|PID=P-2041|PROC=PCI|STATUS=COMPLETE','P-2041','Procedure','PCI complete','Rule parser',99]];
+function feed(){const full=RL[role][1]=='full',all=FD.filter(f=>now>=f[0]),L=all.filter(f=>can(PT.find(p=>p.id==f[4]))).slice(-5).reverse();
+$('dv').innerHTML=DV.map(([n,m])=>{const act=FD.some(f=>f[1]==n&&now>=f[0]&&now-f[0]<3);return `<span class="chip ${act?'on':''}"><i style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--ok);margin-right:5px;${act?'animation:p 1s infinite':''}"></i>${n} <span class="tg ${m?'m':''}">${m?'Modern':'Legacy'}</span></span>`}).join('');
+$('fcnt').textContent=`${all.length} messages normalized`;
+$('fd').innerHTML=RL[role][1]=='none'?'<div class="msg">Message content is not available to your role. Device health only.</div>':L.map(f=>{const[ab,src,fmt,raw,pid,ev,det,mt,cf]=f;return `<div class="fr"><b>${hm(ab)}</b><div><span class="chip">${src}</span> <span class="tg ${DV.find(d=>d[0]==src)[1]?'m':''}">${fmt}</span><pre>${full?esc(raw):'[redacted: minimum necessary]'}</pre></div><div class="ar" style="color:var(--acc)">→</div><div><span class="pill ${mt.startsWith('AI')?'k-iso':'ok'}">${mt} ${cf}%</span> <b>${pid}</b> · ${ev}${cf<95?' <span class="chip a">nurse confirmation requested</span>':''}<div class="msg">${full?det:'detail hidden for your role'}</div></div></div>`}).join('')||'<div class="msg">Waiting for device messages…</div>'}
+/* app */
+function render(){derive();$('clk').textContent=$('ctime').textContent=hm(now);$('sl').value=now;
+const r=RL[role],n=PT.filter(p=>now>=p.arr).length;$('strip').innerHTML=`Viewing as <b>${r[0]}</b> · ${r[1]=='full'?'full clinical detail for all patients':r[1]=='min'?'minimum necessary detail for assigned patients only; others appear as anonymous occupancy':'no patient data; room status and tasks only'} · access logged`;
+banner();if(tab=='map'){renderMap();feed();wf()}}
+function go(t){tab=t;document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id=='v-'+t));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.tab==t));$('ctl').style.display=t=='net'?'none':'flex';if(t=='net')frender();render()}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-tab]');if(t){go(t.dataset.tab);return}const a=e.target.closest('[data-ack]');if(a){acks.add(a.dataset.ack+role);render();return}
+const o=e.target.closest('[data-open]');if(o){sel=o.dataset.open;go('map');$('wfc').scrollIntoView({behavior:'smooth',block:'start'});return}const rm=e.target.closest('[data-room]');if(rm){hl=rm.dataset.room;go('map');$('m').scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>{hl=null;render()},3500);return}const pt=e.target.closest('.pt');if(pt&&pt.dataset.pid){sel=pt.dataset.pid;render();$('wfc').scrollIntoView({behavior:'smooth',block:'start'})}});
+$('role').innerHTML=Object.entries(RL).map(([k,v])=>`<option value="${k}">${v[0]}</option>`).join('');
+$('role').onchange=e=>{role=e.target.value;const v=PT.filter(vis);if(!v.find(p=>p.id==sel)&&v.length)sel=v[0].id;render()};
+$('pl').onclick=()=>{playing=!playing;$('pl').textContent=playing?'Pause':'Play'};$('sl').oninput=e=>{now=+e.target.value;render()};
+
+initMap();fmenu();render();
+setInterval(()=>{if(!playing)return;if(now>=100){if(!window._w){window._w=setTimeout(()=>{now=0;acks.clear();window._w=0},5000)}return}now+=1;render()},450);
+</script></body></html>

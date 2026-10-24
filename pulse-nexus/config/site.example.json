@@ -1,0 +1,54 @@
+{
+  "siteName": "Synthetic example hospital",
+  "mappings": {
+    "steps": {
+      "ADT_ARRIVAL": "ARRIVAL",
+      "ADT_TRIAGE": "TRIAGE",
+      "ORM_ECG": "ECG",
+      "ORM_BLOOD": "BLOOD_TEST",
+      "ORM_XRAY": "XRAY",
+      "ORM_CT": "CT",
+      "ORU_RESULT": "RESULTS"
+    },
+    "locations": {
+      "ED_WAIT": "ARRIVAL",
+      "ED_TRIAGE": "TRIAGE",
+      "ED_RAD": "RADIOLOGY",
+      "ED_LAB": "LAB"
+    },
+    "departments": {
+      "ED": "ED",
+      "RAD": "RADIOLOGY",
+      "LAB": "LAB",
+      "CARD": "CARDIOLOGY"
+    },
+    "beds": {
+      "ED-01": "BED-01",
+      "ED-02": "BED-02"
+    },
+    "equipment": {
+      "CT-01": "CT_SCANNER",
+      "XR-01": "XRAY_MACHINE"
+    }
+  },
+  "freshnessLimitsMinutes": {
+    "ADT": 5,
+    "LIS": 5,
+    "RIS": 5,
+    "OR_LOG": 5,
+    "RTLS": 5,
+    "NURSE_TAP": 5,
+    "BED_SENSOR": 5,
+    "INVENTORY": 5,
+    "DEVICE_HEARTBEAT": 5
+  },
+  "sopFile": "public/data/sop.json",
+  "timeThresholdOverrides": {
+    "TRIAGE": 15,
+    "DOCTOR": 30
+  },
+  "connector": {
+    "port": 2575,
+    "ingestUrl": "https://localhost:3000/api/ingest"
+  }
+}

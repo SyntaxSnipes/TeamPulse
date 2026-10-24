@@ -1,0 +1,12 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "outDir": "dist",
+    "rootDir": "..",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "isolatedModules": false
+  },
+  "include": ["./**/*.ts", "../lib/adapters/hl7.ts", "../scripts/send-sample-hl7.ts"]
+}

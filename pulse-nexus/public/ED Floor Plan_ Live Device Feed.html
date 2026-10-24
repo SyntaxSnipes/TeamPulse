@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ED Floor Plan: Live Device Feed</title>
+<style>
+:root{--bg:#f7f7f4;--fg:#1c1c1a;--mut:#6b6b66;--card:#fff;--line:#d9d9d2;--ok:#1d9e75;--warn:#d98a00;--bad:#d64545;--acc:#3b7de0;--pur:#8e5cd9;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#161615;--fg:#ececE8;--mut:#9a9a94;--card:#222220;--line:#3a3a36;--ok:#3ec79b;--warn:#f0a830;--bad:#f06a6a;--acc:#6aa3f5;--pur:#b48cf5;color-scheme:dark}}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font:15px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif;padding:14px}
+h1{font-size:19px;margin:0 0 2px}p.s{margin:0 0 12px;color:var(--mut);font-size:13px}
+.wrap{max-width:1000px;margin:auto;display:grid;gap:12px}
+@media(min-width:880px){.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:12px}
+.two .card{margin-bottom:0}
+.lab{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);margin:0 0 6px}
+button{font:inherit;font-size:13px;padding:7px 11px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer}
+button.go{background:var(--fg);color:var(--bg);border-color:var(--fg);font-weight:600}
+.row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+svg{width:100%;height:auto;display:block}
+.rm{fill:var(--card);stroke:var(--line);stroke-width:1.5}.rm.iso{stroke:var(--pur)}
+.rl{fill:var(--mut);font-size:10px}.cor{fill:color-mix(in srgb,var(--line) 35%,transparent)}
+.pt{transition:transform .9s ease}.pt text{fill:#fff;font-size:9px;font-weight:700;text-anchor:middle;dominant-baseline:central}
+.pulse{animation:p 1s infinite}@keyframes p{50%{opacity:.15}}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:12px;border:1px solid var(--line);border-radius:8px;padding:4px 8px;display:flex;gap:6px;align-items:center;transition:.3s}
+.chip.on{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 14%,var(--card))}
+.tag{font-size:10px;font-weight:700;padding:1px 6px;border-radius:99px;color:#fff;background:var(--warn)}.tag.m{background:var(--ok)}
+.flow{display:grid;gap:6px}
+@media(min-width:880px){.flow{grid-template-columns:1fr 28px 1fr}}
+.box{border:1px solid var(--line);border-radius:10px;padding:8px;min-height:92px}
+.box pre{margin:0;font:11.5px/1.4 ui-monospace,Menlo,monospace;white-space:pre-wrap;word-break:break-all}
+.arr{display:flex;align-items:center;justify-content:center;color:var(--acc);font-size:18px}
+.arr.go{animation:p .6s 2}
+.pill{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px;color:#fff}
+.ok{background:var(--ok)}.warn{background:var(--warn)}.bad{background:var(--bad)}.pur{background:var(--pur)}.acc{background:var(--acc)}
+.al{font-size:13px;padding:7px 0;border-top:1px solid var(--line)}.al:first-child{border:0}
+table{width:100%;border-collapse:collapse;font-size:13px}td,th{text-align:left;padding:5px 4px;border-top:1px solid var(--line)}th{font-size:11px;color:var(--mut);font-weight:600;border:0}
+.leg{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--mut);margin-top:6px}.leg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;vertical-align:-1px}
+</style></head><body>
+<div class="wrap">
+<div><h1>ED Floor Plan: Live Device Feed</h1>
+<p class="s">Legacy and modern machines speak different formats. A parsing layer (rules for structured data, AI for free text) turns everything into one event stream that moves patients, scores urgency and tracks contamination. Simulated data.</p></div>
+
+<div>
+<div class="card">
+<div class="row" style="margin-bottom:8px"><button class="go" id="pl">Pause</button><button id="nx">Next event ▶</button><button id="rs">Restart</button></div>
+<svg id="m" viewBox="0 0 600 300"></svg>
+<div class="leg"><span><i style="background:var(--ok)"></i>stable</span><span><i style="background:var(--warn)"></i>watch</span><span><i style="background:var(--bad)"></i>urgent</span><span><i style="background:none;border:2px dashed var(--pur)"></i>exposed</span><span><i style="background:var(--warn);opacity:.4;border-radius:2px"></i>needs cleaning</span></div>
+</div>
+
+<div class="card"><p class="lab">Unification pipeline</p>
+<div class="chips" id="ch" style="margin-bottom:10px"></div>
+<div class="flow"><div class="box"><p class="lab">1 · Raw message</p><pre id="raw" style="color:var(--mut)">Waiting for device…</pre></div>
+<div class="arr" id="ar">▶</div>
+<div class="box"><p class="lab">2 · Parsed event</p><div id="uni" style="font-size:13px;color:var(--mut)">–</div></div></div>
+<div id="how" style="font-size:12px;color:var(--mut);margin-top:8px"></div>
+</div>
+
+<div class="two">
+<div class="card"><p class="lab">Alerts</p><div id="al"><div class="al" style="color:var(--mut)">No alerts yet.</div></div></div>
+<div class="card"><p class="lab">Patients</p><table><thead><tr><th>ID</th><th>Reason</th><th>Where</th><th>Status</th></tr></thead><tbody id="tb"></tbody></table></div>
+</div></div></div>
+<script>
+const R={WR:['Waiting room',10,10,170,120],TR:['Triage',190,10,110,120],RS:['Resus',310,10,130,120],CT:['CT / imaging',450,10,140,120],B1:['Bed 1',10,200,95,90],B2:['Bed 2',110,200,95,90],B3:['Bed 3',210,200,95,90],B4:['Bed 4',310,200,95,90],ISO:['Isolation (negative pressure)',420,200,170,90]};
+const NS='http://www.w3.org/2000/svg',$=i=>document.getElementById(i),C={stable:'var(--ok)',watch:'var(--warn)',urgent:'var(--bad)'};
+const MC=[['gate','Gate reader','Legacy serial',0],['ble','BLE tag','Modern JSON',1],['mon2','Monitor B2','Legacy serial',0],['lab','Lab analyzer','HL7 v2',0],['nurse','Nurse terminal','Legacy free text',0],['mon3','Monitor B3','FHIR JSON',1],['ct','CT scanner','DICOM',1]];
+let P,dirty,idx=0,alerts,playing=true,busy=false,T=[],timer;
+const mk=(id,cc,loc,st,rooms)=>({id,cc,loc,st,rooms:new Set(rooms),exp:false,inf:false});
+const mv=(id,r)=>{const p=P.find(x=>x.id==id);p.loc=r;p.rooms.add(r)};
+const A=(lvl,t)=>alerts.unshift([lvl,t]);
+const EV=[
+{m:'gate',raw:'$RF,0017,TR,1*3A',how:['Rule parser · fixed-width serial',.99],u:{patient:'P1',event:'location',to:'Triage',urgency:'info'},fn:()=>mv('P1','TR')},
+{m:'ble',raw:'{"tag":"A41F","zone":"B1","rssi":-48}',how:['Rule parser · JSON schema map',.99],u:{patient:'P5',event:'location',to:'Bed 1',urgency:'info'},fn:()=>mv('P5','B1')},
+{m:'mon2',raw:'B2|HR 078|SP 097|BP 124/80',how:['Rule parser · delimiter + unit map',.98],u:{patient:'P6',event:'vitals',value:'HR 78, SpO₂ 97%, BP 124/80',urgency:'info'},fn:()=>{}},
+{m:'lab',raw:'MSH|^~\\&|ANALYZER|LAB|||ORU^R01\rPID|||P1\rOBX|1|NM|TROPI||0.92|ng/mL|<0.04|HH',how:['Rule parser · HL7 v2 segments',.99],u:{patient:'P1',event:'lab',value:'Troponin 0.92 ng/mL (ref <0.04), critical high',urgency:'URGENT'},fn:()=>{P[0].st='urgent';A('bad','P1: critical troponin. Physician and ECG now, move to Resus.')}},
+{m:'gate',raw:'$RF,0017,RS,1*5C',how:['Rule parser · fixed-width serial',.99],u:{patient:'P1',event:'location',to:'Resus',urgency:'info'},fn:()=>mv('P1','RS')},
+{m:'mon3',raw:'{"resourceType":"Observation","code":"SpO2","valueQuantity":{"value":86},"subject":"P4"}',how:['Rule parser · FHIR resource',.99],u:{patient:'P4',event:'vitals',value:'SpO₂ 86% (below 90)',urgency:'URGENT'},fn:()=>{P[3].st='urgent';A('bad','P4: SpO₂ 86%. Oxygen and physician to Bed 3 now.')}},
+{m:'nurse',raw:'Pt c/o fever x3d, rash spreading from face down. Unvaccinated. Cough. 14:02',how:['AI extraction · free-text NLP',.91],u:{patient:'P3',event:'triage note',value:'Suspected measles (airborne)',urgency:'ISOLATE'},fn:()=>{const s=P[2];s.inf=true;s.st='watch';const sr=[...s.rooms];sr.forEach(r=>dirty.add(r));P.forEach(p=>{if(p!==s&&sr.some(r=>p.rooms.has(r)))p.exp=true});const ex=P.filter(p=>p.exp).map(p=>p.id).join(', ');A('pur',`P3: suspected measles. Move to Isolation now. Exposed: ${ex}. Waiting room and Triage need cleaning and air changes.`)}},
+{m:'gate',raw:'$RF,0003,ISO,1*1D',how:['Rule parser · fixed-width serial',.99],u:{patient:'P3',event:'location',to:'Isolation',urgency:'info'},fn:()=>mv('P3','ISO')},
+{m:'ct',raw:'C-STORE|PID=P4|MOD=CT|DESC=HEAD W/O CONTRAST|STATUS=ARRIVED',how:['Rule parser · DICOM tags',.99],u:{patient:'P4',event:'location',to:'CT',urgency:'info'},fn:()=>mv('P4','CT')},
+{m:'mon3',raw:'{"resourceType":"Observation","code":"HR","valueQuantity":{"value":118},"subject":"P2"}',how:['Rule parser · FHIR resource',.99],u:{patient:'P2',event:'vitals',value:'HR 118 (above 110)',urgency:'WATCH'},fn:()=>{P[1].st='watch';A('warn','P2: heart rate 118 in Waiting room. Recheck vitals.')}}];
+function init(){let s='<defs><pattern id="h" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="8" stroke="var(--warn)" stroke-width="3" opacity=".4"/></pattern></defs><rect class="cor" x="10" y="135" width="580" height="60" rx="6"/><text class="rl" x="300" y="168" text-anchor="middle">Corridor</text>';
+for(const[k,[n,x,y,w,h]]of Object.entries(R))s+=`<rect class="rm ${k=='ISO'?'iso':''}" x="${x}" y="${y}" width="${w}" height="${h}" rx="8"/><rect id="d${k}" x="${x}" y="${y}" width="${w}" height="${h}" rx="8" fill="url(#h)" opacity="0"/><text class="rl" x="${x+8}" y="${y+14}">${n}</text><text id="t${k}" class="rl" x="${x+w-8}" y="${y+14}" text-anchor="end" fill="var(--warn)"></text>`;
+for(let i=1;i<=6;i++)s+=`<g class="pt" id="p${i}"><circle id="x${i}" r="15" fill="none" stroke="var(--pur)" stroke-width="2" stroke-dasharray="4 3" opacity="0"/><circle id="c${i}" r="11"/><text>P${i}</text></g>`;
+$('m').innerHTML=s;$('ch').innerHTML=MC.map(c=>`<div class="chip" id="m_${c[0]}">${c[1]} <span class="tag ${c[3]?'m':''}">${c[2]}</span></div>`).join('')}
+function reset(){T.forEach(clearTimeout);busy=false;idx=0;alerts=[];dirty=new Set();
+P=[mk('P1','Chest pain','WR','stable',['WR']),mk('P2','Abdominal pain','WR','stable',['WR']),mk('P3','Fever, rash','TR','stable',['WR','TR']),mk('P4','Dyspnea','B3','stable',['B3']),mk('P5','Ankle injury','WR','stable',['WR']),mk('P6','Post-op obs','B2','stable',['B2'])];
+$('raw').textContent='Waiting for device…';$('uni').textContent='–';$('how').textContent='';document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));render()}
+function render(){const occ={};P.forEach((p,i)=>{const r=R[p.loc],n=(occ[p.loc]=(occ[p.loc]||0)+1)-1,x=r[1]+24+(n%5)*30,y=r[2]+(r[4]>100?58:52)+Math.floor(n/5)*30;
+const g=$('p'+(i+1));g.style.transform=`translate(${x}px,${y}px)`;$('c'+(i+1)).setAttribute('fill',p.inf?'var(--pur)':C[p.st]);
+const xx=$('x'+(i+1));xx.setAttribute('opacity',p.exp||p.inf?1:0);xx.classList.toggle('pulse',p.st=='urgent')});
+for(const k in R){$('d'+k).setAttribute('opacity',dirty.has(k)?1:0);$('t'+k).textContent=dirty.has(k)?'needs cleaning':''}
+$('al').innerHTML=alerts.length?alerts.map(a=>`<div class="al"><span class="pill ${a[0]}">${a[0]=='bad'?'URGENT':a[0]=='pur'?'ISOLATE':'WATCH'}</span> ${a[1]}</div>`).join(''):'<div class="al" style="color:var(--mut)">No alerts yet.</div>';
+$('tb').innerHTML=P.map(p=>`<tr><td><b>${p.id}</b></td><td>${p.cc}</td><td>${R[p.loc][0].replace(/ \(.*/,'')}</td><td><span class="pill ${p.inf?'pur':p.st=='urgent'?'bad':p.st=='watch'?'warn':'ok'}">${p.inf?'isolate':p.st}</span>${p.exp?' <span class="pill pur" style="opacity:.7">exposed</span>':''}</td></tr>`).join('')}
+function step(){if(busy||idx>=EV.length)return;busy=true;const e=EV[idx++],mc=MC.find(c=>c[0]==e.m);
+document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));$('m_'+e.m).classList.add('on');
+$('raw').textContent=e.raw;$('raw').style.color='var(--fg)';$('uni').textContent='Detecting format…';$('how').textContent='';
+T.push(setTimeout(()=>{$('ar').classList.remove('go');void $('ar').offsetWidth;$('ar').classList.add('go');
+const u=e.u,cls=/URGENT/.test(u.urgency)?'bad':u.urgency=='ISOLATE'?'pur':u.urgency=='WATCH'?'warn':'acc';
+$('uni').innerHTML=`<b>${u.patient}</b> · ${u.event}<br>${u.to?'→ '+u.to:u.value}<br><span class="pill ${cls}" style="margin-top:4px">${u.urgency}</span>`;
+$('how').textContent=`${mc[2]} → ${e.how[0]} · confidence ${Math.round(e.how[1]*100)}%${e.how[1]<.95?' · flagged for nurse confirmation':''}`},900));
+T.push(setTimeout(()=>{e.fn();render()},1900));
+T.push(setTimeout(()=>{busy=false;if(idx>=EV.length&&playing)T.push(setTimeout(()=>{reset()},6000))},2300))}
+function loop(){clearInterval(timer);timer=setInterval(()=>{if(playing)step()},4200)}
+$('pl').onclick=()=>{playing=!playing;$('pl').textContent=playing?'Pause':'Play'};
+$('nx').onclick=step;$('rs').onclick=reset;
+init();reset();loop();setTimeout(step,600);
+</script></body></html>

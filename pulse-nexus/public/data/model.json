@@ -1,0 +1,34 @@
+{
+  "synthetic": true,
+  "generatedAt": "2026-10-24T00:00:00.000Z",
+  "sampleSize": 3000,
+  "nodes": [
+    {"id":"ARRIVAL","label":"Arrival","stage":0,"dept":"FRONT_DESK","visits":3000,"medianMin":12,"p90Min":20,"visitsByPathway":{"CHEST_PAIN":900,"TRAUMA":800,"STROKE":700,"MINOR_INJURY":600}},
+    {"id":"TRIAGE","label":"Triage","stage":1,"dept":"TRIAGE","visits":3000,"medianMin":18,"p90Min":30,"visitsByPathway":{"CHEST_PAIN":900,"TRAUMA":800,"STROKE":700,"MINOR_INJURY":600}},
+    {"id":"DOCTOR","label":"Doctor","stage":2,"dept":"DOCTOR","visits":2800,"medianMin":24,"p90Min":40,"visitsByPathway":{"CHEST_PAIN":880,"TRAUMA":760,"STROKE":680,"MINOR_INJURY":480}},
+    {"id":"ECG","label":"Electrocardiography","stage":3,"dept":"CARDIOLOGY","visits":900,"medianMin":15,"p90Min":25,"visitsByPathway":{"CHEST_PAIN":780,"TRAUMA":60,"STROKE":40,"MINOR_INJURY":20}},
+    {"id":"BLOOD_TEST","label":"Blood test","stage":3,"dept":"LAB","visits":1600,"medianMin":32,"p90Min":55,"visitsByPathway":{"CHEST_PAIN":760,"TRAUMA":260,"STROKE":500,"MINOR_INJURY":80}},
+    {"id":"XRAY","label":"X-ray","stage":4,"dept":"RADIOLOGY","visits":700,"medianMin":24,"p90Min":42,"needs":"XRAY","visitsByPathway":{"CHEST_PAIN":40,"TRAUMA":500,"STROKE":20,"MINOR_INJURY":140}},
+    {"id":"CT","label":"Computed tomography","stage":4,"dept":"RADIOLOGY","visits":900,"medianMin":35,"p90Min":55,"needs":"CT","visitsByPathway":{"CHEST_PAIN":80,"TRAUMA":280,"STROKE":500,"MINOR_INJURY":40}},
+    {"id":"RESULTS","label":"Results","stage":5,"dept":"DOCTOR","visits":2300,"medianMin":15,"p90Min":30,"visitsByPathway":{"CHEST_PAIN":780,"TRAUMA":500,"STROKE":560,"MINOR_INJURY":460}},
+    {"id":"SURGERY","label":"Surgery","stage":6,"dept":"THEATRE","visits":260,"medianMin":45,"p90Min":90,"needs":"OR","visitsByPathway":{"CHEST_PAIN":10,"TRAUMA":220,"STROKE":20,"MINOR_INJURY":10}},
+    {"id":"ADMIT","label":"Admit","stage":7,"dept":"WARD","visits":900,"medianMin":20,"p90Min":40,"visitsByPathway":{"CHEST_PAIN":260,"TRAUMA":300,"STROKE":280,"MINOR_INJURY":60}},
+    {"id":"DISCHARGE","label":"Discharge","stage":7,"dept":"WARD","visits":1200,"medianMin":10,"p90Min":25,"visitsByPathway":{"CHEST_PAIN":500,"TRAUMA":180,"STROKE":60,"MINOR_INJURY":460}}
+  ],
+  "edges": [
+    {"from":"ARRIVAL","to":"TRIAGE","prob":1,"medianMin":12,"p90Min":20,"count":3000,"countByPathway":{"CHEST_PAIN":900,"TRAUMA":800,"STROKE":700,"MINOR_INJURY":600}},
+    {"from":"TRIAGE","to":"DOCTOR","prob":0.93,"medianMin":18,"p90Min":30,"count":2800,"countByPathway":{"CHEST_PAIN":880,"TRAUMA":760,"STROKE":680,"MINOR_INJURY":480}},
+    {"from":"DOCTOR","to":"ECG","prob":0.32,"medianMin":15,"p90Min":25,"count":900,"countByPathway":{"CHEST_PAIN":780,"TRAUMA":60,"STROKE":40,"MINOR_INJURY":20}},
+    {"from":"DOCTOR","to":"BLOOD_TEST","prob":0.57,"medianMin":32,"p90Min":55,"count":1600,"countByPathway":{"CHEST_PAIN":760,"TRAUMA":260,"STROKE":500,"MINOR_INJURY":80}},
+    {"from":"DOCTOR","to":"XRAY","prob":0.25,"medianMin":24,"p90Min":42,"count":700,"countByPathway":{"CHEST_PAIN":40,"TRAUMA":500,"STROKE":20,"MINOR_INJURY":140}},
+    {"from":"DOCTOR","to":"CT","prob":0.32,"medianMin":35,"p90Min":55,"count":900,"countByPathway":{"CHEST_PAIN":80,"TRAUMA":280,"STROKE":500,"MINOR_INJURY":40}},
+    {"from":"ECG","to":"BLOOD_TEST","prob":0.84,"medianMin":32,"p90Min":55,"count":760,"countByPathway":{"CHEST_PAIN":700}},
+    {"from":"BLOOD_TEST","to":"RESULTS","prob":0.82,"medianMin":15,"p90Min":30,"count":1300,"countByPathway":{"CHEST_PAIN":700,"TRAUMA":200,"STROKE":400}},
+    {"from":"XRAY","to":"DISCHARGE","prob":0.6,"medianMin":24,"p90Min":42,"count":420,"countByPathway":{"TRAUMA":300,"MINOR_INJURY":120}},
+    {"from":"CT","to":"RESULTS","prob":0.62,"medianMin":15,"p90Min":30,"count":560,"countByPathway":{"TRAUMA":180,"STROKE":380}},
+    {"from":"RESULTS","to":"DISCHARGE","prob":0.52,"medianMin":10,"p90Min":25,"count":960,"countByPathway":{"CHEST_PAIN":500,"MINOR_INJURY":460}},
+    {"from":"RESULTS","to":"ADMIT","prob":0.39,"medianMin":20,"p90Min":40,"count":700,"countByPathway":{"CHEST_PAIN":260,"TRAUMA":220,"STROKE":220}},
+    {"from":"RESULTS","to":"SURGERY","prob":0.1,"medianMin":45,"p90Min":90,"count":180,"countByPathway":{"TRAUMA":170}}
+  ],
+  "pathways": []
+}

@@ -1,0 +1,1 @@
+{"synthetic":true,"feeds":[{"source":"RTLS","outages":[{"fromT":100,"toT":130}]},{"source":"BED_SENSOR","outages":[{"fromT":112,"toT":125}]}],"items":[{"id":"OR","kind":"EQUIPMENT","label":"Operating theatre","total":1,"available":1,"status":"OK","source":"OR_LOG"}],"changes":[]}

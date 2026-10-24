@@ -1,0 +1,16 @@
+{"synthetic":true,"floors":[{"id":"ed","label":"Emergency department","viewBox":"0 0 900 520","rooms":[
+{"id":"WAIT","label":"Waiting room","type":"WAITING","dept":"FRONT_DESK","x":20,"y":20,"w":220,"h":110,"capacity":20},
+{"id":"TRIAGE","label":"Triage","type":"TRIAGE","dept":"TRIAGE","x":260,"y":20,"w":130,"h":110,"capacity":3},
+{"id":"RESUS","label":"Resus","type":"RESUS","dept":"DOCTOR","x":410,"y":20,"w":150,"h":110,"capacity":3},
+{"id":"CT","label":"CT","type":"IMAGING","dept":"RADIOLOGY","x":580,"y":20,"w":140,"h":110,"capacity":1},
+{"id":"XRAY","label":"X-ray","type":"IMAGING","dept":"RADIOLOGY","x":740,"y":20,"w":140,"h":110,"capacity":1},
+{"id":"CORRIDOR","label":"Corridor","type":"CORRIDOR","dept":"ED","x":20,"y":155,"w":860,"h":55,"capacity":0},
+{"id":"BAY1","label":"Bay 1","type":"BAY","dept":"DOCTOR","x":20,"y":235,"w":155,"h":105,"capacity":1},
+{"id":"BAY2","label":"Bay 2","type":"BAY","dept":"DOCTOR","x":195,"y":235,"w":155,"h":105,"capacity":1},
+{"id":"BAY3","label":"Bay 3","type":"BAY","dept":"DOCTOR","x":370,"y":235,"w":155,"h":105,"capacity":1},
+{"id":"BAY4","label":"Bay 4","type":"BAY","dept":"DOCTOR","x":545,"y":235,"w":155,"h":105,"capacity":1},
+{"id":"ISOLATION","label":"Isolation","type":"ISOLATION","dept":"DOCTOR","x":720,"y":235,"w":160,"h":105,"capacity":1,"negativePressure":true},
+{"id":"LAB","label":"Laboratory","type":"CORRIDOR","dept":"LAB","x":20,"y":375,"w":190,"h":100,"capacity":0}]},
+{"id":"other","label":"Other departments","viewBox":"0 0 900 260","rooms":[
+{"id":"THEATRE","label":"Theatre","type":"THEATRE","dept":"THEATRE","x":20,"y":40,"w":260,"h":140,"capacity":2},
+{"id":"WARD","label":"Ward","type":"WARD","dept":"WARD","x":330,"y":40,"w":260,"h":140,"capacity":20}]}]}

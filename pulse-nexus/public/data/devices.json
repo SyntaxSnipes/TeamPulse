@@ -1,0 +1,8 @@
+{"synthetic":true,"devices":[
+{"id":"gate-01","label":"Gate reader","format":"SERIAL_FIXED","source":"RTLS","lastSeen":1710000000000,"status":"OK"},
+{"id":"ble-01","label":"BLE patient tag","format":"BLE_JSON","source":"RTLS","lastSeen":1710000005000,"status":"OK"},
+{"id":"monitor-02","label":"Bedside monitor","format":"DELIMITED_VITALS","source":"DEVICE_HEARTBEAT","lastSeen":1710000010000,"status":"OK"},
+{"id":"lab-01","label":"Lab analyzer","format":"HL7_V2","source":"LIS","lastSeen":1710000030000,"status":"OK"},
+{"id":"ehr-01","label":"EHR observation","format":"FHIR_JSON","source":"ADT","lastSeen":1710000035000,"status":"OK"},
+{"id":"ct-01","label":"CT scanner","format":"DICOM","source":"RIS","lastSeen":1710000040000,"status":"STALE"},
+{"id":"nurse-01","label":"Nurse terminal","format":"FREE_TEXT","source":"NURSE_TAP","lastSeen":1710000020000,"status":"OK"}]}
